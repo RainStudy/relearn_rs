@@ -2,6 +2,8 @@
 
 ## 大作业 Wordle Game
 
+[大作业一：Wordle](https://lab.cs.tsinghua.edu.cn/rust/projects/wordle/)
+
 只上了两节课就要做这种难度的作业我是没想到的。对应了一下课表，上到这里他们才刚接触Rust三天，这就是清华爷吗
 
 对我来说写起来还是没有很大难度（毕竟之前也算学过 Rust)
