@@ -1,4 +1,8 @@
+use std::io;
+
 use colored::Colorize;
+
+use crate::sanitize_word;
 
 // 单词长度
 pub const WORD_LENGTH: usize = 5;
@@ -12,17 +16,40 @@ pub struct WordleGame {
     guesses: Vec<String>,
 }
 
+impl Iterator for WordleGame {
+    type Item = ();
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.has_next() {
+            println!("{}", "Enter your word (5 letters) and guess:".bright_blue());
+            let mut input = String::new();
+            io::stdin().read_line(&mut input).unwrap();
+            input = match sanitize_word(input.as_str()) {
+                Ok(str) => str,
+                Err(_) => {
+                    println!("{}", "The length of input characters is incorrect.".red());
+                    return Some(())
+                }
+            };
+            self.next(input);
+            Some(())
+        } else {
+            None
+        }
+    }
+}
+
 impl WordleGame {
     pub fn new(word: String) -> Self {
         Self { word, guesses: Vec::new() }
     }
 
-    pub fn next(&mut self, word: String) {
+    fn next(&mut self, word: String) {
         self.guesses.push(word);
         self.display_invaild_letter();
     }
 
-    pub fn has_next(&self) -> bool {
+    fn has_next(&self) -> bool {
         self.guesses.len() < MAX_TRIES && !self.is_complete()
     }
 

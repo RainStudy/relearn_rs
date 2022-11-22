@@ -1,5 +1,3 @@
-use std::io;
-
 use clap::{command, arg};
 use colored::Colorize;
 use game::WORD_LENGTH;
@@ -19,23 +17,8 @@ fn main() -> Resultish<()> {
     };
     let word = sanitize_word(word)?;
     let mut game = game::WordleGame::new(word);
-    let win = loop {
-        if game.has_next() {
-            println!("{}", "Enter your word (5 letters) and guess:".bright_blue());
-            let mut input = String::new();
-            io::stdin().read_line(&mut input)?;
-            input = match sanitize_word(input.as_str()) {
-                Ok(str) => str,
-                Err(_) => {
-                    println!("{}", "The input word is too long!".red());
-                    continue;
-                }
-            };
-            game.next(input);
-        } else {
-            break game.is_complete();
-        }
-    };
+    for _ in &mut game {  }
+    let win = game.is_complete();
     if win {
         println!("{}", "Congraulations! You win this game!".bright_cyan())
     } else {
@@ -48,7 +31,7 @@ fn main() -> Resultish<()> {
 // 1. 去除空格
 // 2. 全大写
 // 3. 检查是否是ASCII标准定义的字符，如果不是它们将会被忽略
-fn sanitize_word(word: &str) -> Resultish<String> {
+pub fn sanitize_word(word: &str) -> Resultish<String> {
     let str: String = word.trim()
         .to_uppercase()
         .chars()
